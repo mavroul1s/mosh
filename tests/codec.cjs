@@ -1,0 +1,13 @@
+const fs=require('fs'),assert=require('node:assert/strict');require('../codec.js');
+const a=new Uint8Array(fs.readFileSync('assets/signal.avi')),b=new Uint8Array(fs.readFileSync('assets/orbit.avi'));
+const A=AVI.parse(a),B=AVI.parse(b);
+const plain=AVI.mosh(a,b,{allI:false,dropB:false,dropP:0,repeat:1,interval:6});
+assert.equal(plain.frames.length,A.frames.length+B.frames.length);
+const melt=AVI.mosh(a,b,{allI:true,dropB:false,dropP:0,repeat:1,interval:6});
+assert.equal(melt.frames.filter(x=>x==='I').length,1);
+assert.equal(AVI.parse(melt.bytes).frames.length,melt.frames.length);
+const bloom=AVI.mosh(a,b,{allI:true,dropB:false,dropP:0,repeat:7,interval:6});
+assert(bloom.stats.repeated>0);assert(bloom.frames.length>melt.frames.length);
+assert.equal(AVI.parse(bloom.bytes).frames.length,bloom.frames.length);
+assert.throws(()=>AVI.parse(new Uint8Array(12)));
+console.log('PASS: VOP classification, anchor deletion, prediction repetition, AVI rebuild, malformed input');

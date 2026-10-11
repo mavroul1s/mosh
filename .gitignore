@@ -1,0 +1,6 @@
+__pycache__/
+test-results/
+assets/*.avi
+*.zip
+node_modules/
+*.log

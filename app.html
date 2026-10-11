@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MOSH / frame surgery</title><style>/*STYLE*/</style></head>
+<body>
+<header><a class="wordmark" href="#">MOSH<span> / </span></a><span class="tagline">FRAME SURGERY</span><div class="header-right"><span class="local">LOCAL ENGINE</span><button id="help" aria-label="Help">?</button><a href="https://github.com/mavroul1s/mosh" target="_blank" rel="noopener">SOURCE ↗</a></div></header>
+<main>
+<section class="workspace">
+<div class="section-title"><span>01 / MONITOR</span><span id="mode">DEMO / MOSHED</span></div>
+<div class="monitor"><video id="output" playsinline loop muted controls></video><video id="original" playsinline loop muted controls hidden></video><span class="monitor-label">PREDICTION BROKEN<span id="resolution">640 × 360</span></span><div id="processing" hidden><b id="stage">Loading engine</b><div class="progress"><i id="progress"></i></div><button id="cancel">CANCEL</button></div></div>
+<div class="transport"><button id="play">PAUSE</button><button id="restart" aria-label="Restart playback">↺</button><span id="time">00:00 / 00:08</span><div class="view-switch"><button id="effectView" class="active">MOSH</button><button id="sourceView">SOURCE A</button></div><button id="fullscreen">FULLSCREEN ↗</button></div>
+<div class="section-title timeline-head"><span>02 / FRAME MAP</span><span id="frameInfo">I × 1 / P × 191</span></div>
+<div id="frameMap" class="frame-map" aria-label="Encoded frame map"></div>
+<div class="legend"><span><i class="ikey"></i>I / ANCHOR</span><span><i class="pkey"></i>P / MOTION</span><span><i class="bkey"></i>B / BETWEEN</span><span id="stats">Demo loaded. Change the rules. Break it again.</span></div>
+<div class="section-title sources-head"><span>03 / SOURCES</span><button id="reset">RESET DEMO ↺</button></div>
+<div class="sources">
+<article class="source" data-slot="0"><div class="thumb"><video id="thumb0" muted playsinline></video><span>A</span></div><div class="source-info"><b id="name0">SIGNAL TEST</b><small id="meta0">4.0s / seed image</small><div class="trim"><label>IN <input id="in0" type="number" min="0" step="0.1" value="0" aria-label="Source A start time"></label><label>LEN <input id="len0" type="number" min="0.2" max="30" step="0.1" value="4" aria-label="Source A duration"></label></div></div><label class="upload">REPLACE ↗<input id="file0" type="file" accept="video/*,.mkv,.avi" hidden></label></article>
+<article class="source" data-slot="1"><div class="thumb"><video id="thumb1" muted playsinline></video><span>B</span></div><div class="source-info"><b id="name1">LIQUID ORBIT</b><small id="meta1">4.0s / motion donor</small><div class="trim"><label>IN <input id="in1" type="number" min="0" step="0.1" value="0" aria-label="Source B start time"></label><label>LEN <input id="len1" type="number" min="0.2" max="30" step="0.1" value="4" aria-label="Source B duration"></label></div></div><label class="upload">REPLACE ↗<input id="file1" type="file" accept="video/*,.mkv,.avi" hidden></label></article>
+</div>
+</section>
+<aside>
+<div class="section-title"><span>04 / DAMAGE CONTROL</span><span class="status-dot"></span></div>
+<h1>Make it<br><em>fall apart.</em></h1>
+<div class="presets" aria-label="Effect presets"><button data-preset="melt" class="active">MELT</button><button data-preset="bloom">BLOOM</button><button data-preset="rupture">RUPTURE</button></div>
+<div class="rule"><div><b>Delete I-frames</b><small>Carry A into B</small></div><label class="toggle"><input id="allI" type="checkbox" checked aria-label="Delete all I frames after the first"><span></span></label></div>
+<div class="slider-row"><label for="repeat">P-frame repeats <output id="repeatVal">1×</output></label><input id="repeat" type="range" min="1" max="12" value="1"></div>
+<div class="slider-row"><label for="interval">Repeat every <output id="intervalVal">12 frames</output></label><input id="interval" type="range" min="1" max="48" value="12"></div>
+<div class="slider-row"><label for="dropP">Drop every P <output id="dropPVal">OFF</output></label><input id="dropP" type="range" min="0" max="16" value="0"></div>
+<div class="rule"><div><b>Delete B-frames</b><small>Break in-between motion</small></div><label class="toggle"><input id="dropB" type="checkbox" aria-label="Delete B frames"><span></span></label></div>
+<details><summary>CODEC & OUTPUT <span>+</span></summary><div class="advanced"><label>SIZE<select id="size"><option value="640">640 × 360</option><option value="960">960 × 540</option><option value="1280">1280 × 720</option></select></label><label>FPS<select id="fps"><option>24</option><option>30</option><option>15</option></select></label><label>GOP<input id="gop" type="number" value="120" min="2" max="600"></label><label>B FRAMES<select id="bframes"><option value="0">0 / OFF</option><option value="1">1</option><option value="2">2</option></select></label><label>QUANTIZER<input id="quality" type="number" value="5" min="2" max="31"></label><small>MPEG-4 / XVID → frame surgery → MP4<br>Silent output · up to 30s per clip</small></div></details>
+<div class="actions"><button id="render" class="primary">DATAMOSH <span>↗</span></button><button id="download">DOWNLOAD MP4 <span>↓</span></button><button id="downloadAvi" class="raw" hidden>RAW AVI ↓</button></div>
+<p id="notice" role="status" aria-live="polite">Two clips. One broken prediction.</p>
+<div class="aside-bottom"><span>NO UPLOADS. NO CLOUD.</span><span>v1.0</span></div>
+</aside>
+</main>
+<footer><span>KEEP THE MOTION. LOSE THE FRAME.</span><span>MPEG-4 PART 2 / BROWSER LAB</span></footer>
+<dialog id="helpDialog"><button id="closeHelp" aria-label="Close help">CLOSE ×</button><h2>Frame surgery.</h2><p>A supplies the image. B supplies the motion. Remove B’s I-frames and its prediction frames redraw A instead.</p><p><b>Melt</b> removes anchors. <b>Bloom</b> repeats P-frames. <b>Rupture</b> also drops P/B-frames. Settings apply when you press Datamosh.</p><p>Replace either clip, set IN / LEN, then render. Preview and download the same MP4. Raw AVI preserves the corrupted MPEG-4 frames for further editing.</p><p>Everything runs on your device. Video exports are silent. Large clips need more memory; use short trims. Pause or cancel whenever you want.</p></dialog>
+<script id="runtime-data" type="application/json">/*DATA*/</script><script>/*APP*/</script>
+</body></html>

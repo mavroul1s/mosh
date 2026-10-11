@@ -14,3 +14,10 @@ Checked on 11 October 2026 with Chromium in the Codex browser, served over local
 - JavaScript syntax checks pass.
 
 The in-app browser blocks `file://` navigation, so opening by double-click was not directly browser-tested. All media, worker scripts, core JavaScript, and WebAssembly bytes are embedded; no external runtime resources are fetched. `tests/browser.py` is provided for an environment that permits local-file browser tests. An attempted Playwright launch on this Windows host failed with `spawn UNKNOWN`; that script was not claimed as passing.
+
+## Minimal UI / Auto Mosh update
+
+- Auto Mosh applies a balanced configuration and starts the worker in one click, retaining both source clips, their trims, selected size, and frame rate.
+- The automatic demo render produced one I-frame and 223 P-frames, with 33 repeated frames. Its MP4 plays (9.33 seconds, readyState 4).
+- The auto button and manual controls are disabled during rendering.
+- A 390px viewport still has no horizontal overflow (375px document). Updated screenshots are included.

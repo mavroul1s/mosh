@@ -18,14 +18,17 @@ with sync_playwright() as pw:
  page.locator('#effectView').click()
  with page.expect_download() as dl:page.locator('#download').click()
  dl.value.save_as(p/'test-results/demo.mp4')
- for preset in ['melt','bloom','rupture']:
-  page.locator(f'[data-preset="{preset}"]').click()
-  page.locator('#render').click()
+ for preset in ['melt','bloom','rupture','auto']:
+  previous=page.locator('#output').get_attribute('src')
+  if preset=='auto':page.locator('#auto').click()
+  else:
+   page.locator(f'[data-preset="{preset}"]').click()
+   page.locator('#render').click()
   page.wait_for_function('!document.querySelector("#processing").hidden',timeout=10000)
   page.wait_for_function('document.querySelector("#processing").hidden',timeout=180000)
   msg=page.locator('#notice').inner_text()
   print(preset,msg,flush=True)
-  assert msg.startswith('Done.'),msg
+  assert page.locator('#output').get_attribute('src')!=previous,msg
   page.wait_for_function('document.querySelector("#output").readyState >= 2')
   assert page.locator('#output').evaluate('(v)=>v.duration')>1
   with page.expect_download() as dl:page.locator('#download').click()
@@ -33,7 +36,7 @@ with sync_playwright() as pw:
   with page.expect_download() as dl:page.locator('#downloadAvi').click()
   dl.value.save_as(p/f'test-results/{preset}.avi')
  page.locator('#render').click();page.locator('#cancel').click()
- assert 'cancelled' in page.locator('#notice').inner_text()
+ assert 'Cancelled' in page.locator('#notice').inner_text()
  page.locator('#reset').click()
  page.set_viewport_size({'width':390,'height':844})
  page.screenshot(path=str(p/'test-results/mobile.png'),full_page=True)

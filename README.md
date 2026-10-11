@@ -14,8 +14,8 @@ Download **[index.html](https://github.com/mavroul1s/mosh/releases/latest/downlo
 
 1. The demo opens with both videos loaded and a finished effect ready to play or download.
 2. Replace A (the seed image) and B (the motion donor), or drop a video onto either source. Set IN and LEN in seconds.
-3. Pick **Melt**, **Bloom**, or **Rupture**. Adjust frame deletion, P-frame repeats, repeat interval, and B-frame deletion. Expand **Codec & output** for size, FPS, GOP, B-frame encoding, and MPEG-4 quantizer.
-4. Press **Datamosh**. The frame map describes the resulting encoded stream. Download the preview as MP4, or download the damaged AVI for further editing.
+3. Press **Auto Mosh** to choose balanced settings and render immediately. For manual control, pick **Melt**, **Bloom**, or **Rupture**. Adjust frame deletion, P-frame repeats, repeat interval, and B-frame deletion. Expand **Output** for size, FPS, GOP, B-frame encoding, and MPEG-4 quantizer.
+4. Press **Mosh**. The frame map describes the resulting encoded stream. Download the preview as MP4, or download the damaged AVI for further editing.
 
 Space toggles playback. The `?` button contains help. Changes apply on render; the prior output remains available until the next render succeeds.
 

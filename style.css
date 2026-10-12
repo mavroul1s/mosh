@@ -2,3 +2,7 @@
 .workspace,aside{min-width:0}@media(max-width:760px){main{grid-template-columns:minmax(0,1fr)}.transport{flex-wrap:wrap}.view-switch{margin-left:auto}}
 
 .presets{margin-top:20px}.monitor-label{justify-content:flex-end}#notice:empty{display:none}.actions{margin-top:24px}aside .section-title{margin-bottom:8px}
+
+#sourceFallback{position:absolute;inset:0;display:grid;align-content:center;justify-content:center;gap:12px;background:#111212;color:var(--muted);font:13px Consolas,monospace;text-align:center}#sourceFallback small{font-size:10px;color:var(--accent)}
+
+.edit-modes{display:flex;margin-top:16px}.edit-modes button{flex:1;font-size:10px}.edit-modes .active{background:var(--accent);border-color:var(--accent);color:#111}.join-length{display:flex;justify-content:space-between;padding:22px 0;border-bottom:1px solid var(--line);font:11px Consolas,monospace;color:var(--muted)}.join-length output{color:var(--accent)}

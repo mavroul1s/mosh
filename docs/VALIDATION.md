@@ -21,3 +21,11 @@ The in-app browser blocks `file://` navigation, so opening by double-click was n
 - The automatic demo render produced one I-frame and 223 P-frames, with 33 repeated frames. Its MP4 plays (9.33 seconds, readyState 4).
 - The auto button and manual controls are disabled during rendering.
 - A 390px viewport still has no horizontal overflow (375px document). Updated screenshots are included.
+
+## JOIN and source-preview update — 12 October 2026
+
+- Native MPEG-4 encode → JOIN surgery → MP4 decode produced exactly 288 frames at 24 fps (12 seconds) from two 7-second sources with a 2-second overlap.
+- Codec checks cover preserved frame slots, the restored B anchor, zero overlap, short clips, rebuilt AVI index, and rejection of B-frame input for JOIN.
+- The WASM browser render of the two 4-second demos produces a playable 6-second MP4 with 2-second overlap (readyState 4).
+- Uploaded portrait H.264 MOV and VP9 WebM both appear immediately in the source preview; A/B controls identify the active clip. A JOIN render using both custom clips produced a playable MP4 and completed a download through the visible button.
+- JOIN mobile layout has no horizontal overflow at 390px (375px document). `docs/join.png` shows the new mode.

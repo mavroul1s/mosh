@@ -33,5 +33,20 @@ function mosh(a,b,o){
  }
  return {bytes:build(A.header,out),stats,frames:out.map(f=>f.type)};
 }
-root.AVI={parse,build,mosh,type};
+function joined(a,b,o){
+ const A=parse(a),B=parse(b);
+ if(A.frames.some(f=>f.type==='B')||B.frames.some(f=>f.type==='B'))throw Error('JOIN requires streams without B-frames');
+ const overlap=Math.max(0,Math.min(Math.round(o.overlap*o.fps),A.frames.length-1,B.frames.length-1));
+ const out=A.frames.slice(0,A.frames.length-overlap),stats={I:0,P:0,B:0,removed:overlap,repeated:0,replaced:0};
+ let reference=out[out.length-1];
+ for(let i=0;i<B.frames.length;i++){
+  let frame=B.frames[i];
+  // Preserve the frame slot while preventing an incoming anchor from resetting A.
+  if(i<overlap&&frame.type==='I'){frame=reference;stats.replaced++;}
+  out.push(frame);reference=frame;
+ }
+ for(const frame of out)stats[frame.type]=(stats[frame.type]||0)+1;
+ return {bytes:build(A.header,out),stats,frames:out.map(f=>f.type),duration:out.length/o.fps,overlap:overlap/o.fps};
+}
+root.AVI={parse,build,mosh,joined,type};
 })(typeof self!=='undefined'?self:globalThis);

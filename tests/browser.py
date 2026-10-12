@@ -18,6 +18,12 @@ with sync_playwright() as pw:
  page.locator('#effectView').click()
  with page.expect_download() as dl:page.locator('#download').click()
  dl.value.save_as(p/'test-results/demo.mp4')
+ previous=page.locator('#output').get_attribute('src')
+ page.locator('#joinMode').click();page.locator('#auto').click()
+ page.wait_for_function('document.querySelector("#processing").hidden && document.querySelector("#output").getAttribute("src")!=='+json.dumps(previous),timeout=180000)
+ page.wait_for_function('document.querySelector("#output").readyState >= 2')
+ assert abs(page.locator('#output').evaluate('(v)=>v.duration')-6)<1/24
+ page.locator('#moshMode').click()
  for preset in ['melt','bloom','rupture','auto']:
   previous=page.locator('#output').get_attribute('src')
   if preset=='auto':page.locator('#auto').click()

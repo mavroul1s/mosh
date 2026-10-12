@@ -2,7 +2,7 @@
 
 **[Open the app →](https://mavroul1s.github.io/mosh/)**
 
-A minimal, local video datamoshing desk. Actual MPEG-4 I/P/B-frame editing, two built-in clips, preview, and MP4 / raw AVI downloads. No account, uploads, server, or CDN.
+A minimal, local video datamoshing desk. Actual MPEG-4 I/P/B-frame editing, two built-in clips, MOSH and JOIN modes, preview, and MP4 / raw AVI downloads. No account, uploads, server, or CDN.
 
 ![The editing desk](docs/desktop.png)
 
@@ -18,6 +18,18 @@ Download **[index.html](https://github.com/mavroul1s/mosh/releases/latest/downlo
 4. Press **Mosh**. The frame map describes the resulting encoded stream. Download the preview as MP4, or download the damaged AVI for further editing.
 
 Space toggles playback. The `?` button contains help. Changes apply on render; the prior output remains available until the next render succeeds.
+
+New clips appear immediately in the main preview. Use **A / B** to inspect either source; browser-incompatible formats show a fallback while remaining available to the codec. Imports disable render until the file finishes loading. Uploaded clips use their full duration up to the 30-second limit by default.
+
+## JOIN
+
+Select **JOIN**, set **Overlap**, then press **Auto Join**. This creates one video that starts with A, carries A's image into B through a datamosh transition, then restores B and continues normally. The duration readout uses the selected trims:
+
+**A + B − overlap**. Two 7-second clips with a 2-second overlap produce **12 seconds**. Zero overlap produces a straight 14-second join. Timing is rounded to the selected frame rate.
+
+JOIN replaces the end of A with the transition into B: it retains A's prefix, preserves B's frame slots while suppressing incoming anchors during the overlap, and forces a fresh B keyframe when the overlap ends. It manages GOP/B-frame encoding and does not repeat or drop prediction frames, so those MOSH controls are hidden. Short clips automatically limit the overlap so both retain a frame. Output stays silent.
+
+![JOIN mode](docs/join.png)
 
 ## What the engine does
 
@@ -59,6 +71,15 @@ python -m pip install playwright
 python -m playwright install chromium
 python tests/browser.py
 ```
+
+JOIN frame-count and native decode checks:
+
+```sh
+node tests/join.cjs
+python tests/join-native.py
+```
+
+The native check generates two 7-second inputs and verifies a decoded 12-second MP4 at 24 fps.
 
 The tests open the standalone HTML through `file://`, exercise all three presets through the actual WASM codec, download MP4 and AVI, check cancellation, and check mobile layout. The two synthetic demo videos are generated specifically for this project with FFmpeg filters, without third-party footage.
 

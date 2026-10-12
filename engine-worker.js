@@ -9,15 +9,19 @@ onmessage=async({data:d})=>{try{
  for(let i=0;i<2;i++){
   postMessage({stage:i===0?'Encoding A':'Encoding B',progress:10+i*25});
   core.FS.writeFile('input'+i,new Uint8Array(d.inputs[i]));
-  await run(['-ss',String(o.starts[i]),'-i','input'+i,'-t',String(o.lengths[i]),'-an','-vf',`scale=${o.width}:${o.height}:force_original_aspect_ratio=decrease,pad=${o.width}:${o.height}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=${o.fps}`,'-c:v','mpeg4','-q:v',String(o.quality),'-g',String(o.gop),'-bf',String(o.bframes),'-sc_threshold','1000000000','-vtag','XVID','-threads','1','-f','avi','clip'+i+'.avi']);
-  read('clip'+i+'.avi');core.FS.unlink('input'+i);
+  const restore=o.join&&i===1?['-force_key_frames',String(o.overlap)]:[];
+  const command=['-ss',String(o.starts[i]),'-i','input'+i,'-t',String(o.lengths[i]),'-an','-vf',`scale=${o.width}:${o.height}:force_original_aspect_ratio=decrease,pad=${o.width}:${o.height}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=${o.fps}`,'-c:v','mpeg4','-q:v',String(o.quality),'-g',String(o.gop),'-bf',String(o.join?0:o.bframes),'-sc_threshold','1000000000',...restore,'-vtag','XVID','-threads','1','-f','avi','clip'+i+'.avi'];
+  await run(command);
+  read('clip'+i+'.avi');
+  if(o.join&&i===1){const countA=AVI.parse(read('clip0.avi')).frames.length,countB=AVI.parse(read('clip1.avi')).frames.length;const actualOverlap=Math.max(0,Math.min(Math.round(o.overlap*o.fps),countA-1,countB-1))/o.fps;if(actualOverlap!==o.overlap){o.overlap=actualOverlap;command[command.indexOf('-force_key_frames')+1]=String(actualOverlap);await run(command);}}
+  core.FS.unlink('input'+i);
  }
  postMessage({stage:'Moshing',progress:65});
- const result=AVI.mosh(read('clip0.avi'),read('clip1.avi'),o);core.FS.writeFile('moshed.avi',result.bytes);
+ const result=(o.join?AVI.joined:AVI.mosh)(read('clip0.avi'),read('clip1.avi'),o);core.FS.writeFile('moshed.avi',result.bytes);
  postMessage({stage:'Rendering',progress:76});
  await run(['-fflags','+genpts','-err_detect','ignore_err','-i','moshed.avi','-an','-vf',`setpts=N/(${o.fps}*TB)`,'-r',String(o.fps),'-c:v','libx264','-preset','ultrafast','-crf','18','-pix_fmt','yuv420p','-movflags','+faststart','-threads','1','result.mp4']);
  const video=read('result.mp4').slice();const avi=result.bytes;
- postMessage({done:true,video:video.buffer,avi:avi.buffer,stats:result.stats,frames:result.frames},[video.buffer,avi.buffer]);
+ postMessage({done:true,video:video.buffer,avi:avi.buffer,stats:result.stats,frames:result.frames,duration:result.duration,overlap:result.overlap},[video.buffer,avi.buffer]);
  for(const n of ['clip0.avi','clip1.avi','moshed.avi','result.mp4'])try{core.FS.unlink(n);}catch{}
  }
 }catch(e){postMessage({error:String(e.message||e)});}};

@@ -24,6 +24,18 @@ with sync_playwright() as pw:
  page.wait_for_function('document.querySelector("#output").readyState >= 2')
  assert abs(page.locator('#output').evaluate('(v)=>v.duration')-6)<1/24
  page.locator('#moshMode').click()
+ page.locator('summary').click();page.locator('#bframes').select_option('2');page.locator('#gop').fill('24')
+ previous=page.locator('#output').get_attribute('src');page.locator('#loadFrames').click()
+ page.wait_for_function('document.querySelector("#processing").hidden && document.querySelector("#output").getAttribute("src")!=='+json.dumps(previous),timeout=180000)
+ assert page.locator('#frameMap .B').count()>0
+ count=page.locator('#frameMap .packet').count()
+ page.locator('#frameMap .B').first.click();page.locator('#frameMap').press('ArrowRight');page.locator('#deleteFrame').click()
+ assert page.locator('#frameMap .packet').count()==count-1
+ page.locator('#undoFrame').click();assert page.locator('#frameMap .packet').count()==count
+ page.locator('#redoFrame').click();assert page.locator('#frameMap .packet').count()==count-1
+ previous=page.locator('#output').get_attribute('src');page.locator('#applyFrames').click()
+ page.wait_for_function('document.querySelector("#processing").hidden && document.querySelector("#output").getAttribute("src")!=='+json.dumps(previous),timeout=180000)
+ assert page.locator('#frameMap .packet').count()==count-1
  for preset in ['melt','bloom','rupture','auto']:
   previous=page.locator('#output').get_attribute('src')
   if preset=='auto':page.locator('#auto').click()

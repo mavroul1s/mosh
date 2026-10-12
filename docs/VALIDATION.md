@@ -29,3 +29,13 @@ The in-app browser blocks `file://` navigation, so opening by double-click was n
 - The WASM browser render of the two 4-second demos produces a playable 6-second MP4 with 2-second overlap (readyState 4).
 - Uploaded portrait H.264 MOV and VP9 WebM both appear immediately in the source preview; A/B controls identify the active clip. A JOIN render using both custom clips produced a playable MP4 and completed a download through the visible button.
 - JOIN mobile layout has no horizontal overflow at 390px (375px document). `docs/join.png` shows the new mode.
+
+## Direct packet editor — 12 October 2026
+
+- The preloaded demo AVI exposes every packet with I/P/B colors and a real selection cursor. Mouse selection and Right-arrow stepping pause the video and seek to the selected packet's image.
+- Delete, Undo, Redo, and Apply were exercised in the browser. Deleting one P-frame produced a refreshed frame bar and playable MP4.
+- Load Frames with GOP 24 / B Frames 2 produced **10 I, 56 P, and 126 B packets**. B packet 3 seeks to 0.0625s, reflecting its decoded display position rather than its encoded index.
+- Copying a P-frame over a B-frame, then Shift+Right to an I-frame and Delete, produced **9 I, 57 P, 125 B packets**. Applying decoded a playable 7.83s MP4 and the visible download completed as `edit.mp4`.
+- Model tests cover raw packet bytes, type inheritance, deletion, undo/redo, invalid donors, last-frame protection, worker ArrayBuffer input, and B-frame display mapping.
+- Native codec tests encode real B-frames, replace a B packet with a P packet, remove an I packet, and decode the edited AVI into a playable MP4.
+- The frame editor has no horizontal document overflow at 390px (375px document). Its packet bar scrolls independently. Screenshot: `docs/frame-editor.png`.

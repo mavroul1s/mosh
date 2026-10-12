@@ -4,3 +4,6 @@ assets/*.avi
 *.zip
 node_modules/
 *.log
+*.tmp
+
+!assets/demo-frames.avi

@@ -10,7 +10,7 @@ function type(data){for(let i=0;i+4<data.length;i++)if(data[i]===0&&data[i+1]===
 function parse(a){
  if(ascii(a,0)!=='RIFF'||ascii(a,8)!=='AVI ')throw Error('Expected an AVI container');
  let header,frames=[];
- function walk(start,end,movi=false){for(let p=start;p+8<=end;){const id=ascii(a,p),len=u32(a,p+4),stop=p+8+len;if(stop>end||stop>a.length)throw Error('Truncated AVI');if(id==='LIST'){const kind=ascii(a,p+8);if(kind==='hdrl')header=a.slice(p+8,stop);else if(kind==='movi'||kind==='rec ')walk(p+12,stop,true);}else if(movi&&/^\d\dd[bc]$/.test(id)){const data=a.slice(p+8,stop);if(data.length)frames.push({data,type:type(data)});}p=stop+(len%2);}}
+ function walk(start,end,movi=false){for(let p=start;p+8<=end;){const id=ascii(a,p),len=u32(a,p+4),stop=p+8+len;if(stop>end||stop>a.length)throw Error('Truncated AVI');if(id==='LIST'){const kind=ascii(a,p+8);if(kind==='hdrl')header=a.slice(p+8,stop);else if(kind==='movi'||kind==='rec ')walk(p+12,stop,true);}else if(movi&&/^\d\dd[bc]$/.test(id)){const data=a.slice(p+8,stop);if(data.length)frames.push({data,type:type(data),pos:p+8});}p=stop+(len%2);}}
  walk(12,a.length);if(!header||!frames.length)throw Error('No video frames');return {header,frames};
 }
 function build(header,frames){
